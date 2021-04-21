@@ -18,20 +18,18 @@
 
 package testworkload;
 
-import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.streaming.api.functions.sink.SinkFunction;
-
-import java.util.LinkedHashMap;
-import java.util.List;
 
 /**
  * Fake Workload for CS6211 Project
  */
 public class FakeWorkLoad {
+
+	public static int scenario;//
+
 	public static void main(String[] args) throws Exception {
 		final ParameterTool params = ParameterTool.fromArgs(args);
 
@@ -43,6 +41,7 @@ public class FakeWorkLoad {
 		int serviceRate	= params.getInt("serviceRate", 20);
 		int outputRate	= params.getInt("outputRate", 20);
 		int wordSize	= params.getInt("wordSize", 32);
+		scenario	= params.getInt("scenario", 1);
 
 		DataStream<Tuple3<Integer, Long, String>> largeWords = env
 				.addSource(new LargeWordsGenerator(

@@ -7,6 +7,8 @@ import org.apache.flink.util.Collector;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import static testworkload.FakeWorkLoad.scenario;
+
 public final class CounterMap implements FlatMapFunction<Tuple3<Integer, Long, String>, Tuple3<Integer, Long, String>> {
     private static final long serialVersionUID = 1L;
     private double totalLatency;
@@ -15,7 +17,7 @@ public final class CounterMap implements FlatMapFunction<Tuple3<Integer, Long, S
     private final long serviceTime; // in millisecond
     public CounterMap(int serviceRate) {
         this.serviceTime = 1/serviceRate * 1000;
-        displayHeader();
+//        displayHeader();
     }
 
     public void displayHeader() {
@@ -42,15 +44,26 @@ public final class CounterMap implements FlatMapFunction<Tuple3<Integer, Long, S
         double latency = (System.currentTimeMillis()-tuple2.f1)/1000.0;
         totalLatency += latency;
 
-        displayInfo();
+//        displayInfo();
         collector.collect(tuple2);
 
     }
 
     public static LinkedHashMap<String, Integer> getTaskDeployRequirement(List<String> allMachine) {
         LinkedHashMap<String, Integer> machineSpec = new LinkedHashMap<>();
-        machineSpec.put(allMachine.get(0), 2);
-		machineSpec.put(allMachine.get(1), 2);
+        switch (scenario) {
+            case 1:
+            case 2:
+            case 3:
+                machineSpec.put(allMachine.get(0), 2);
+                machineSpec.put(allMachine.get(1), 2);
+                break;
+            case 4:
+                machineSpec.put(allMachine.get(0), 4);
+                break;
+            default:
+                break;
+        }
         return machineSpec;
     }
 

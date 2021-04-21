@@ -18,7 +18,6 @@
 
 package testworkload;
 
-import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.streaming.api.datastream.DataStream;
@@ -33,32 +32,40 @@ public class FakeWorkLoad {
 
 		StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
-		int runtime 	= params.getInt("runtime", -1);
+		int runtime 	= params.getInt("runtime", 10);
 		int nKeys		= params.getInt("nKeys", 100);
 		int inputRate	= params.getInt("inputRate", 100);
 		int serviceRate	= params.getInt("serviceRate", 200);
 		int outputRate	= params.getInt("outputRate", 200);
-		int wordSize	= params.getInt("wordSize", 512);
+		int wordSize	= params.getInt("wordSize", 32);
 
-		DataStream<String> largeWords = env
+		DataStream<Tuple2<Integer, String>> largeWords = env
 				.addSource(new LargeWordsGenerator(
 						runtime,
 						nKeys,
 						inputRate,
 						wordSize
 				))
-				.name("Source Operator")
-				.uid("OperatorA");
+				.setParallelism(1) // source operator always have 1 parallelism
+				.name("Source")
+				.uid("OperatorA")
+				.disableChaining();
 
-		DataStream<Tuple2<String, Integer>> counts = largeWords
+		DataStream<Tuple2<Integer, String>> counts = largeWords
+				.keyBy(0)
 				.flatMap(new CounterMap(serviceRate))
-				.name("Count Operator")
-				.uid("OperatorB");
+				.setParallelism(1)
+				.name("Count")
+				.uid("OperatorB")
+				.disableChaining();
 
+		counts
+				.addSink(new DummySink(outputRate))
+				.setParallelism(1)
+				.name("Sink")
+				.uid("OperatorC")
+				.disableChaining();
 
-		counts.addSink(new DummySink(outputRate))
-				.name("Sink Operator")
-				.uid("OperatorC");
 		env.execute();
 	}
 }

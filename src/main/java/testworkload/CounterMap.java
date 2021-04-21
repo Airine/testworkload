@@ -4,7 +4,7 @@ import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.util.Collector;
 
-public final class CounterMap implements FlatMapFunction<String, Tuple2<String, Integer>> {
+public final class CounterMap implements FlatMapFunction<Tuple2<Integer, String>, Tuple2<Integer, String>> {
     private static final long serialVersionUID = 1L;
 
     private final long serviceTime; // in millisecond
@@ -13,8 +13,8 @@ public final class CounterMap implements FlatMapFunction<String, Tuple2<String, 
     }
 
     @Override
-    public void flatMap(String s, Collector<Tuple2<String, Integer>> collector) throws Exception {
+    public void flatMap(Tuple2<Integer, String> tuple2, Collector<Tuple2<Integer, String>> collector) throws Exception {
         Thread.sleep(this.serviceTime);
-        collector.collect(new Tuple2<String, Integer>(s, 1));
+        collector.collect(tuple2);
     }
 }

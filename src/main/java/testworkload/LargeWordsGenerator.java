@@ -1,23 +1,27 @@
 package testworkload;
 
+import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.functions.source.SourceFunction;
+import scala.Int;
 
 import static testworkload.utils.StringGenerator.generateString;
 
-public class LargeWordsGenerator implements SourceFunction<String> {
+public class LargeWordsGenerator implements SourceFunction<Tuple2<Integer, String>> {
 
-    private int runtime;
-    private int nKeys;
-    private int rate;       // how many records per second
-    private int wordSize;   // in byte
+    private int count = 0;
+    private volatile boolean isRunning = true;
 
-    private String prefix;
+    private final int nKeys;
+    private final int rate;       // how many records per second
+    private final int nTuples;
+
+    private final String prefix;
 
     public LargeWordsGenerator(int runtime, int nKeys, int rate, int wordSize) {
-        this.runtime = runtime;
         this.nKeys = nKeys;
         this.rate = rate;
-        this.wordSize = wordSize;
+        // in byte
+        this.nTuples = runtime * rate;
 
         prefix = generateString(wordSize);
 
@@ -29,12 +33,20 @@ public class LargeWordsGenerator implements SourceFunction<String> {
     }
 
     @Override
-    public void run(SourceContext<String> sourceContext) throws Exception {
-
+    public void run(SourceContext<Tuple2<Integer, String>> ctx) throws Exception {
+        while (isRunning && (count < nTuples)) {
+            if (count % rate == 0) {
+                Thread.sleep(1000);
+            }
+            synchronized (ctx.getCheckpointLock()) {
+                ctx.collect(new Tuple2<>(count % nKeys, prefix));
+                count++;
+            }
+        }
     }
 
     @Override
     public void cancel() {
-
+        isRunning = false;
     }
 }

@@ -38,11 +38,11 @@ public class DummySink implements FlatMapFunction<Tuple3<Integer, Long, String>,
         LinkedHashMap<String, Integer> machineSpec = new LinkedHashMap<>();
 //        switch (scenario) {
 //            case 1:
-                machineSpec.put(allMachine.get(2), 4);
+//                machineSpec.put(allMachine.get(2), 4);
 //                break;
 //            case 2:
-//                machineSpec.put(allMachine.get(1), 2);
-//                machineSpec.put(allMachine.get(2), 2);
+                machineSpec.put(allMachine.get(1), 2);
+                machineSpec.put(allMachine.get(2), 2);
 //                break;
 //            case 3:
 //                machineSpec.put(allMachine.get(0), 2);

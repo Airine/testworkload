@@ -35,12 +35,12 @@ public class FakeWorkLoad {
 
 		StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
-		int runtime 	= params.getInt("runtime", 60);
+		int runtime 	= params.getInt("runtime", 30);
 		int nKeys		= params.getInt("nKeys", 16);
-		int inputRate	= params.getInt("inputRate", 10);
-		int serviceRate	= params.getInt("serviceRate", 20);
-		int outputRate	= params.getInt("outputRate", 20);
-		int wordSize	= params.getInt("wordSize", 32);
+		int inputRate	= params.getInt("inputRate", 4);
+		int serviceRate	= params.getInt("serviceRate", 5);
+		int outputRate	= params.getInt("outputRate", 5);
+		int wordSize	= params.getInt("wordSize", 512);
 
 		DataStream<Tuple3<Integer, Long, String>> largeWords = env
 				.addSource(new LargeWordsGenerator(
@@ -69,7 +69,7 @@ public class FakeWorkLoad {
 				.uid("OperatorC")
 				.disableChaining();
 
-		latency.countWindowAll(100)
+		latency.countWindowAll(10)
 				.sum(0)
 				.print();
 

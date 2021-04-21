@@ -23,6 +23,9 @@ import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+
 /**
  * Fake Workload for CS6211 Project
  */
@@ -59,7 +62,7 @@ public class FakeWorkLoad {
 				.uid("OperatorB")
 				.disableChaining();
 
-		counts
+		counts.keyBy(0)
 				.addSink(new DummySink(outputRate))
 				.setParallelism(1)
 				.name("Sink")

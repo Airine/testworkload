@@ -23,6 +23,7 @@ import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.functions.sink.SinkFunction;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -36,11 +37,11 @@ public class FakeWorkLoad {
 
 		StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
-		int runtime 	= params.getInt("runtime", 10);
-		int nKeys		= params.getInt("nKeys", 100);
-		int inputRate	= params.getInt("inputRate", 100);
-		int serviceRate	= params.getInt("serviceRate", 200);
-		int outputRate	= params.getInt("outputRate", 200);
+		int runtime 	= params.getInt("runtime", 60);
+		int nKeys		= params.getInt("nKeys", 16);
+		int inputRate	= params.getInt("inputRate", 10);
+		int serviceRate	= params.getInt("serviceRate", 20);
+		int outputRate	= params.getInt("outputRate", 20);
 		int wordSize	= params.getInt("wordSize", 32);
 
 		DataStream<Tuple3<Integer, Long, String>> largeWords = env
@@ -63,12 +64,16 @@ public class FakeWorkLoad {
 				.uid("OperatorB")
 				.disableChaining();
 
-		counts.keyBy(0)
-				.addSink(new DummySink(outputRate))
+		DataStream<Double> latency = counts.keyBy(0)
+				.flatMap(new DummySink(outputRate))
 				.setParallelism(1)
-				.name("Sink")
+				.name("Sink:Sink")
 				.uid("OperatorC")
 				.disableChaining();
+
+		latency.countWindowAll(100)
+				.sum(0)
+				.print();
 
 		env.disableOperatorChaining();
 

@@ -9,7 +9,6 @@ import java.util.List;
 
 public final class CounterMap implements FlatMapFunction<Tuple3<Integer, Long, String>, Tuple3<Integer, Long, String>> {
     private static final long serialVersionUID = 1L;
-
     private double totalLatency;
     private double totalDelay;
     private long totalVisit;
@@ -24,7 +23,7 @@ public final class CounterMap implements FlatMapFunction<Tuple3<Integer, Long, S
     }
 
     public void displayInfo() {
-        System.out.printf("%.4f, %.4f, %d %.4f, %.4f\n",
+        System.out.printf("%.4f, %.4f, %d, %.4f, %.4f\n",
                 totalLatency/totalVisit,
                 totalDelay/totalVisit,
                 totalVisit,
@@ -40,10 +39,12 @@ public final class CounterMap implements FlatMapFunction<Tuple3<Integer, Long, S
         totalDelay += (System.currentTimeMillis()-tuple2.f1)/1000.0;
         Thread.sleep(this.serviceTime);
         totalVisit++;
-        totalLatency += (System.currentTimeMillis()-tuple2.f1)/1000.0;
+        double latency = (System.currentTimeMillis()-tuple2.f1)/1000.0;
+        totalLatency += latency;
 
         displayInfo();
         collector.collect(tuple2);
+
     }
 
     public static LinkedHashMap<String, Integer> getTaskDeployRequirement(List<String> allMachine) {

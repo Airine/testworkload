@@ -48,8 +48,8 @@ public final class CounterMap implements FlatMapFunction<Tuple3<Integer, Long, S
 
     public static LinkedHashMap<String, Integer> getTaskDeployRequirement(List<String> allMachine) {
         LinkedHashMap<String, Integer> machineSpec = new LinkedHashMap<>();
-        machineSpec.put(allMachine.get(0), 4);
-//		machineSpec.put(allMachine.get(1), 2);
+        machineSpec.put(allMachine.get(0), 2);
+		machineSpec.put(allMachine.get(1), 2);
         return machineSpec;
     }
 

@@ -1,6 +1,5 @@
 package testworkload;
 
-import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.streaming.api.functions.sink.SinkFunction;
 
@@ -41,7 +40,7 @@ public class DummySink implements SinkFunction<Tuple3<Integer, Long, String>> {
 
     public static LinkedHashMap<String, Integer> getTaskDeployRequirement(List<String> allMachine) {
         LinkedHashMap<String, Integer> machineSpec = new LinkedHashMap<>();
-        machineSpec.put(allMachine.get(0), 4);
+        machineSpec.put(allMachine.get(2), 4);
 //		machineSpec.put(allMachine.get(1), 2);
         return machineSpec;
     }

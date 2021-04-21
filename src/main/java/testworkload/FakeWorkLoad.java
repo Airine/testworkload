@@ -28,7 +28,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
  */
 public class FakeWorkLoad {
 
-	public static int scenario;//
+//	public static int scenario;//
 
 	public static void main(String[] args) throws Exception {
 		final ParameterTool params = ParameterTool.fromArgs(args);
@@ -41,7 +41,6 @@ public class FakeWorkLoad {
 		int serviceRate	= params.getInt("serviceRate", 20);
 		int outputRate	= params.getInt("outputRate", 20);
 		int wordSize	= params.getInt("wordSize", 32);
-		scenario	= params.getInt("scenario", 1);
 
 		DataStream<Tuple3<Integer, Long, String>> largeWords = env
 				.addSource(new LargeWordsGenerator(

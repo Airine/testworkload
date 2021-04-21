@@ -1,23 +1,48 @@
 package testworkload;
 
 import org.apache.flink.api.common.functions.FlatMapFunction;
-import org.apache.flink.api.java.tuple.Tuple2;
+import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.util.Collector;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public final class CounterMap implements FlatMapFunction<Tuple2<Integer, String>, Tuple2<Integer, String>> {
+public final class CounterMap implements FlatMapFunction<Tuple3<Integer, Long, String>, Tuple3<Integer, Long, String>> {
     private static final long serialVersionUID = 1L;
 
+    private double totalLatency;
+    private double totalDelay;
+    private long totalVisit;
     private final long serviceTime; // in millisecond
     public CounterMap(int serviceRate) {
         this.serviceTime = 1/serviceRate * 1000;
+        displayHeader();
     }
 
+    public void displayHeader() {
+        System.out.println("Avg Latency, Avg Delay, Total Visits, Total Latency, Total Delay");
+    }
+
+    public void displayInfo() {
+        System.out.printf("%.4f, %.4f, %d %.4f, %.4f\n",
+                totalLatency/totalVisit,
+                totalDelay/totalVisit,
+                totalVisit,
+                totalLatency,
+                totalDelay
+                );
+    }
+
+
     @Override
-    public void flatMap(Tuple2<Integer, String> tuple2, Collector<Tuple2<Integer, String>> collector) throws Exception {
+    public void flatMap(Tuple3<Integer, Long, String> tuple2, Collector<Tuple3<Integer, Long, String>> collector) throws Exception {
+
+        totalDelay += (System.currentTimeMillis()-tuple2.f1)/1000.0;
         Thread.sleep(this.serviceTime);
+        totalVisit++;
+        totalLatency += (System.currentTimeMillis()-tuple2.f1)/1000.0;
+
+        displayInfo();
         collector.collect(tuple2);
     }
 

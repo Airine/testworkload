@@ -1,12 +1,14 @@
 package testworkload;
 
 import org.apache.flink.api.java.tuple.Tuple2;
+import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.streaming.api.functions.source.SourceFunction;
-import scala.Int;
+
+import java.security.Timestamp;
 
 import static testworkload.utils.StringGenerator.generateString;
 
-public class LargeWordsGenerator implements SourceFunction<Tuple2<Integer, String>> {
+public class LargeWordsGenerator implements SourceFunction<Tuple3<Integer, Long, String>> {
 
     private int count = 0;
     private volatile boolean isRunning = true;
@@ -33,13 +35,13 @@ public class LargeWordsGenerator implements SourceFunction<Tuple2<Integer, Strin
     }
 
     @Override
-    public void run(SourceContext<Tuple2<Integer, String>> ctx) throws Exception {
+    public void run(SourceContext<Tuple3<Integer, Long, String>> ctx) throws Exception {
         while (isRunning && (count < nTuples)) {
             if (count % rate == 0) {
                 Thread.sleep(1000);
             }
             synchronized (ctx.getCheckpointLock()) {
-                ctx.collect(new Tuple2<>(count % nKeys, prefix));
+                ctx.collect(new Tuple3<>(count % nKeys, System.currentTimeMillis(),prefix));
                 count++;
             }
         }

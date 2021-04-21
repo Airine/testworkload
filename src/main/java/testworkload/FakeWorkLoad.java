@@ -19,6 +19,7 @@
 package testworkload;
 
 import org.apache.flink.api.java.tuple.Tuple2;
+import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -42,7 +43,7 @@ public class FakeWorkLoad {
 		int outputRate	= params.getInt("outputRate", 200);
 		int wordSize	= params.getInt("wordSize", 32);
 
-		DataStream<Tuple2<Integer, String>> largeWords = env
+		DataStream<Tuple3<Integer, Long, String>> largeWords = env
 				.addSource(new LargeWordsGenerator(
 						runtime,
 						nKeys,
@@ -54,7 +55,7 @@ public class FakeWorkLoad {
 				.uid("OperatorA")
 				.disableChaining();
 
-		DataStream<Tuple2<Integer, String>> counts = largeWords
+		DataStream<Tuple3<Integer, Long, String>> counts = largeWords
 				.keyBy(0)
 				.flatMap(new CounterMap(serviceRate))
 				.setParallelism(1)

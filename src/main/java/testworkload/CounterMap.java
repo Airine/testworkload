@@ -53,11 +53,11 @@ public final class CounterMap implements FlatMapFunction<Tuple3<Integer, Long, S
 //            case 1:
 //            case 2:
 //            case 3:
-                machineSpec.put(allMachine.get(0), 2);
-                machineSpec.put(allMachine.get(1), 2);
+//                machineSpec.put(allMachine.get(0), 2);
+//                machineSpec.put(allMachine.get(1), 2);
 //                break;
 //            case 4:
-//                machineSpec.put(allMachine.get(0), 4);
+                machineSpec.put(allMachine.get(0), 4);
 //                break;
 //            default:
 //                break;

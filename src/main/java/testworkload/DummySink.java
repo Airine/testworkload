@@ -45,11 +45,11 @@ public class DummySink implements FlatMapFunction<Tuple3<Integer, Long, String>,
 //                machineSpec.put(allMachine.get(2), 2);
 //                break;
 //            case 3:
-                machineSpec.put(allMachine.get(0), 2);
-                machineSpec.put(allMachine.get(1), 2);
+//                machineSpec.put(allMachine.get(0), 2);
+//                machineSpec.put(allMachine.get(1), 2);
 //                break;
 //            case 4:
-//                machineSpec.put(allMachine.get(0), 4);
+                machineSpec.put(allMachine.get(0), 4);
 //                break;
 //            default:
 //                break;

@@ -66,6 +66,8 @@ public class FakeWorkLoad {
 				.uid("OperatorC")
 				.disableChaining();
 
+		env.disableOperatorChaining();
+
 		env.execute();
 	}
 }

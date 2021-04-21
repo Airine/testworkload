@@ -31,7 +31,7 @@ public class DummySink implements FlatMapFunction<Tuple3<Integer, Long, String>,
 
     public DummySink(int serviceRate) {
         this.serviceTime = 1/serviceRate * 1000;
-        displayHeader();
+//        displayHeader();
     }
 
     public static LinkedHashMap<String, Integer> getTaskDeployRequirement(List<String> allMachine) {
@@ -64,7 +64,7 @@ public class DummySink implements FlatMapFunction<Tuple3<Integer, Long, String>,
         totalVisit++;
         double latency = (System.currentTimeMillis()-integerLongStringTuple3.f1)/1000.0;
         totalLatency += latency;
-        displayInfo();
+//        displayInfo();
         collector.collect(latency);
     }
 }

@@ -66,7 +66,7 @@ public class FakeWorkLoad {
 		DataStream<Double> latency = counts.keyBy(0)
 				.flatMap(new DummySink(outputRate))
 				.setParallelism(1)
-				.name("Sink:Sink")
+				.name("Sink: Sink")
 				.uid("OperatorC")
 				.disableChaining();
 
